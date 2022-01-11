@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ImageUpload;
 use Illuminate\Http\Request;
+use Image;
 
 class ImageUploadController extends Controller
 {
@@ -19,7 +20,9 @@ class ImageUploadController extends Controller
         $imgName = [];
         foreach($images as $image){
             $new_name = rand().'.'.$image->getClientOriginalExtension();
-            $image->move(public_path('/uploads/images'),$new_name);
+            $compress = Image::make($image->getRealPath())->encode('jpg', 75);
+            $compress->save(public_path('/uploads/images/'.$new_name));
+
             $imgName[] = $new_name;
             
             ImageUpload::create([
